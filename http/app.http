@@ -1,0 +1,8 @@
+
+### Hello World!
+GET http://localhost:3000
+content-type: application/json
+
+### Health Check
+GET http://localhost:3000/health
+content-type: application/json
