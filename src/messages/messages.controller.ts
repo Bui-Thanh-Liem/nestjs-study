@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -31,20 +32,29 @@ export class MessagesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     this.logger.log('findOne - id:', id);
-    return this.messagesService.findOne(id);
+    const message = await this.messagesService.findOne(id);
+
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+
+    return message;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateMessageDto: UpdateMessageDto,
+  ) {
     this.logger.log('update - id:', id);
-    return this.messagesService.update(id, updateMessageDto);
+    return await this.messagesService.update(id, updateMessageDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     this.logger.log('remove - id:', id);
-    return this.messagesService.remove(id);
+    return await this.messagesService.remove(id);
   }
 }

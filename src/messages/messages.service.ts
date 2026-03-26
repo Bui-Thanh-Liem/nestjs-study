@@ -5,19 +5,19 @@ import { MessagesRepository } from './messages.repository';
 
 @Injectable()
 export class MessagesService {
-  private messageRepo = new MessagesRepository();
+  constructor(private messagesRepo: MessagesRepository) {}
 
   async create(createMessageDto: CreateMessageDto) {
-    await this.messageRepo.create(createMessageDto.content);
+    await this.messagesRepo.create(createMessageDto.content);
     return 'Message created successfully';
   }
 
   async findAll() {
-    return await this.messageRepo.findAll();
+    return await this.messagesRepo.findAll();
   }
 
   async findOne(id: string): Promise<string> {
-    return await this.messageRepo.findOne(id);
+    return await this.messagesRepo.findOne(id);
   }
 
   update(id: string, updateMessageDto: UpdateMessageDto) {
@@ -25,6 +25,6 @@ export class MessagesService {
   }
 
   async remove(id: string) {
-    return await this.messageRepo.remove(id);
+    return await this.messagesRepo.remove(id);
   }
 }

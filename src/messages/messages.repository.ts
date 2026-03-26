@@ -1,8 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { readFile, writeFile } from 'fs/promises';
 
+@Injectable()
 export class MessagesRepository {
-  private pathDb =
-    '/Users/nguyenducnghia/liemdev/study/nestjs/src/db/messages.json';
+  private pathDb = 'D:\\my\\nestjs-study\\src\\db\\messages.json';
 
   async create(content: string) {
     const contents = await readFile(this.pathDb, 'utf-8');

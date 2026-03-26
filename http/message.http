@@ -11,7 +11,7 @@ GET http://localhost:3000/messages?page=1&limit=10
 content-type: application/json
 
 ### Get a message by id
-GET http://localhost:3000/messages/2
+GET http://localhost:3000/messages/2x
 content-type: application/json
 
 ### Update a message by id
