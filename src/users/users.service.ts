@@ -1,26 +1,61 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepo: Repository<UserEntity>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const user = this.userRepo.create(createUserDto);
+    return await this.userRepo.save(user);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll({
+    page,
+    limit,
+    email,
+  }: {
+    page: string;
+    limit: string;
+    email?: string;
+  }) {
+    return this.userRepo.find({
+      where: email ? { email } : {},
+      take: parseInt(limit),
+      skip: (parseInt(page) - 1) * parseInt(limit),
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    return await this.userRepo.findOneBy({ id });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepo.findOneBy({ id });
+
+    if (!user) {
+      return null;
+    }
+
+    const updatedUser = this.userRepo.merge(user, updateUserDto);
+    return await this.userRepo.save(updatedUser);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const user = await this.userRepo.findOneBy({ id });
+
+    if (!user) {
+      return null;
+    }
+
+    // await this.userRepo.delete(id); // command SQL
+    return await this.userRepo.remove(user);
   }
 }
