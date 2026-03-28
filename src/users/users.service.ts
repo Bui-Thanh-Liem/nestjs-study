@@ -17,6 +17,10 @@ export class UsersService {
     return await this.userRepo.save(user);
   }
 
+  async findByEmail(email: string) {
+    return await this.userRepo.findBy({ email });
+  }
+
   findAll({
     page,
     limit,

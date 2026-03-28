@@ -12,10 +12,27 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import { UserDto } from './dto/user.dto';
+import { Serializer } from 'src/decorators/serializer.dto';
+import { AuthService } from './auth.service';
+import { SignupUserDto } from './dto/signup-user.dto';
 
+// @UseInterceptors(new SerializerInterceptor(UserDto))
+@Serializer(UserDto)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
+
+  @Post('signup')
+  async signUp(@Body() signupUserDto: SignupUserDto) {
+    return await this.authService.singUp(
+      signupUserDto.email,
+      signupUserDto.password,
+    );
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -30,6 +47,7 @@ export class UsersController {
     @Query('limit') limit: string = '10',
     @Query('email') email: string,
   ) {
+    console.log('UsersController - findAll');
     return this.usersService.findAll({ page, limit, email });
   }
 

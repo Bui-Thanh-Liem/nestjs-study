@@ -1,3 +1,13 @@
+### User signup
+POST http://localhost:3000/users/signup
+content-type: application/json
+
+{
+    "email": "john.doe@example.com",
+    "password": "abc123@"
+}
+
+
 ### Create user
 POST http://localhost:3000/users
 content-type: application/json
@@ -13,7 +23,7 @@ GET http://localhost:3000/users?page=1&limit=10&email=
 content-type: application/json
 
 ### Get a user by id
-GET http://localhost:3000/users/5
+GET http://localhost:3000/users/2
 content-type: application/json
 
 ### Update a user by id
