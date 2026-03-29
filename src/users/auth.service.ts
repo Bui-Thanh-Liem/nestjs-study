@@ -1,6 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { UsersService } from './users.service';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException
+} from '@nestjs/common';
 import bcrypt from 'bcrypt';
+import { UsersService } from './users.service';
 
 @Injectable()
 export class AuthService {
@@ -25,5 +29,15 @@ export class AuthService {
     return newUser;
   }
 
-  signIn() {}
+  async signIn(email: string, password: string) {
+    //
+    const user = await this.usersService.findByEmail(email);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    //
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new UnauthorizedException('Invalid credentials');
+
+    return user;
+  }
 }

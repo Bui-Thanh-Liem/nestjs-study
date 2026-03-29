@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return await this.userRepo.findBy({ email });
+    return await this.userRepo.findOneBy({ email });
   }
 
   findAll({
@@ -38,6 +38,7 @@ export class UsersService {
   }
 
   async findOne(id: string) {
+    if (!id) return null;
     return await this.userRepo.findOneBy({ id });
   }
 

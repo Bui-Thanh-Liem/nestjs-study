@@ -8,14 +8,19 @@ import {
   Patch,
   Post,
   Query,
+  Session,
+  UnauthorizedException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import { UserDto } from './dto/user.dto';
-import { Serializer } from 'src/decorators/serializer.dto';
 import { AuthService } from './auth.service';
 import { SignupUserDto } from './dto/signup-user.dto';
+import { Serializer } from 'src/interceptors/serializer.interceptor';
+import { CurrentUser } from 'src/decorators/curent-user.dto';
+import { CurrentUserInterceptor } from 'src/interceptors/current-user.interceptor';
 
 // @UseInterceptors(new SerializerInterceptor(UserDto))
 @Serializer(UserDto)
@@ -27,11 +32,48 @@ export class UsersController {
   ) {}
 
   @Post('signup')
-  async signUp(@Body() signupUserDto: SignupUserDto) {
-    return await this.authService.singUp(
+  async signUp(@Body() signupUserDto: SignupUserDto, @Session() session: any) {
+    const user = await this.authService.singUp(
       signupUserDto.email,
       signupUserDto.password,
     );
+
+    session.userId = user.id;
+    return user;
+  }
+
+  @Post('signin')
+  async signIn(
+    @Body() signInDto: { email: string; password: string },
+    @Session() session: any,
+  ) {
+    const user = await this.authService.signIn(
+      signInDto.email,
+      signInDto.password,
+    );
+    session.userId = user.id;
+    return user;
+  }
+
+  @Post('signout')
+  signOut(@Session() session: any) {
+    session.userId = null;
+    return { message: 'Signed out successfully' };
+  }
+
+  // @Get('whoami')
+  // async whoami(@Session() session: any) {
+  //   const userId = session.userId;
+  //   if (!userId) throw new UnauthorizedException('Not authenticated');
+  //   const user = await this.usersService.findOne(userId);
+  //   if (!user) throw new UnauthorizedException('User not found');
+  //   return user;
+  // }
+
+  @Get('whoami')
+  @UseInterceptors(CurrentUserInterceptor)
+  whoami(@CurrentUser() user: any) {
+    return user;
   }
 
   @Post()
