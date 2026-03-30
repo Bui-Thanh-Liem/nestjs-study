@@ -1,22 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
-import { UserEntity } from './entities/user.entity';
+import { UsersService } from '../users.service';
+import { UserEntity } from '../entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
 
-  //
+  // Mock repository
   const _userRepository = {
     create: jest.fn().mockImplementation((dto: CreateUserDto) => dto),
     save: jest
       .fn()
-      .mockImplementation((user) => Promise.resolve({ id: '1', ...user })),
+      .mockImplementation((user) => Promise.resolve({ id: 1, ...user })),
     findOneBy: jest
       .fn()
-      .mockResolvedValue({ id: '1', email: 'test@gmail.com' }),
+      .mockImplementation(({ email }: { email: string }) =>
+        Promise.resolve({ id: 1, email, password: 'hashed' }),
+      ),
     find: jest.fn().mockResolvedValue([]),
     merge: jest.fn().mockImplementation(
       (user, dto: UpdateUserDto): Promise<UserEntity | null> => ({
@@ -24,7 +26,7 @@ describe('UsersService', () => {
         ...dto,
       }),
     ),
-    remove: jest.fn().mockResolvedValue({ id: '1' }),
+    remove: jest.fn().mockResolvedValue({ id: 1 }),
   };
 
   //
@@ -44,5 +46,13 @@ describe('UsersService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('should find a user by email', async () => {
+    await expect(service.findByEmail('test@test.com')).resolves.toEqual({
+      id: 1,
+      email: 'test@test.com',
+      password: 'hashed',
+    });
   });
 });
