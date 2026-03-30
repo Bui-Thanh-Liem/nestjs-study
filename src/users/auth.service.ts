@@ -1,7 +1,7 @@
 import {
   ConflictException,
   Injectable,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { UsersService } from './users.service';

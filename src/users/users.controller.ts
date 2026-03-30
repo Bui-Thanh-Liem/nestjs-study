@@ -9,8 +9,7 @@ import {
   Post,
   Query,
   Session,
-  UnauthorizedException,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,8 +18,8 @@ import { UserDto } from './dto/user.dto';
 import { AuthService } from './auth.service';
 import { SignupUserDto } from './dto/signup-user.dto';
 import { Serializer } from 'src/interceptors/serializer.interceptor';
-import { CurrentUser } from 'src/decorators/curent-user.dto';
-import { CurrentUserInterceptor } from 'src/interceptors/current-user.interceptor';
+import { CurrentUser } from 'src/decorators/current-user.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 // @UseInterceptors(new SerializerInterceptor(UserDto))
 @Serializer(UserDto)
@@ -61,17 +60,8 @@ export class UsersController {
     return { message: 'Signed out successfully' };
   }
 
-  // @Get('whoami')
-  // async whoami(@Session() session: any) {
-  //   const userId = session.userId;
-  //   if (!userId) throw new UnauthorizedException('Not authenticated');
-  //   const user = await this.usersService.findOne(userId);
-  //   if (!user) throw new UnauthorizedException('User not found');
-  //   return user;
-  // }
-
   @Get('whoami')
-  @UseInterceptors(CurrentUserInterceptor)
+  @UseGuards(AuthGuard)
   whoami(@CurrentUser() user: any) {
     return user;
   }
