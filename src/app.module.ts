@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MessagesModule } from './messages/messages.module';
 import { UserEntity } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -16,7 +15,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 };
 
 @Module({
-  imports: [MessagesModule, UsersModule, TypeOrmModule.forRoot(typeOrmConfig)],
+  imports: [UsersModule, TypeOrmModule.forRoot(typeOrmConfig)],
   controllers: [AppController],
   providers: [
     AppService,

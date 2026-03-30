@@ -11,15 +11,16 @@ import {
   Session,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UsersService } from './users.service';
-import { UserDto } from './dto/user.dto';
-import { AuthService } from './auth.service';
-import { SignupUserDto } from './dto/signup-user.dto';
-import { Serializer } from 'src/interceptors/serializer.interceptor';
 import { CurrentUser } from 'src/decorators/current-user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { Serializer } from 'src/interceptors/serializer.interceptor';
+import { AuthService } from './auth.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { SigninUserDto } from './dto/signin-user.dto';
+import { SignupUserDto } from './dto/signup-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
+import { UsersService } from './users.service';
 
 // @UseInterceptors(new SerializerInterceptor(UserDto))
 @Serializer(UserDto)
@@ -42,10 +43,7 @@ export class UsersController {
   }
 
   @Post('signin')
-  async signIn(
-    @Body() signInDto: { email: string; password: string },
-    @Session() session: any,
-  ) {
+  async signIn(@Body() signInDto: SigninUserDto, @Session() session: any) {
     const user = await this.authService.signIn(
       signInDto.email,
       signInDto.password,

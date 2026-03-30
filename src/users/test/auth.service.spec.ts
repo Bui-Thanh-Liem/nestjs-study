@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../auth.service';
 import { UsersService } from '../users.service';
 // import bcrypt from 'bcrypt';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
 
 // jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
@@ -73,5 +73,33 @@ describe('AuthService', () => {
     //
     const newUser = await service.singUp('test2@test.com', 'password');
     expect(newUser.password).not.toEqual('password');
+  });
+
+  // ==== Case: Invalid credentials =====
+  it('should throw an error if credentials are invalid', async () => {
+    // Override
+    _userService.findByEmail = jest.fn().mockImplementationOnce((dto) => ({
+      id: 1,
+      email: dto.email,
+      password: 'password', // Mocked hashed password
+    }));
+
+    await expect(service.signIn('email@email.com', 'password')).rejects.toThrow(
+      UnauthorizedException,
+    );
+  });
+
+  // ==== Case: Valid credentials =====
+  it('should return user if credentials are valid', async () => {
+    // // Override
+    _userService.findByEmail = jest.fn().mockResolvedValueOnce({
+      id: 1,
+      email: 'test@test.com',
+      password: '$2b$10$VSAlo.MXr5EFtwm1JU00Detm1N4WVQtXRHvi5r4LlsZsp1O2LVFLK',
+    });
+
+    //
+    const user = await service.signIn('test@test.com', 'password');
+    expect(user).toBeDefined();
   });
 });
