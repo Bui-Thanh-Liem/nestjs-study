@@ -1,0 +1,27 @@
+### Create report
+POST http://localhost:3000/reports
+content-type: application/json
+
+{
+    "title": "Hello, World! alo liem 2"
+}
+
+### Get all reports
+GET http://localhost:3000/reports?page=1&limit=10
+content-type: application/json
+
+### Get a report by id
+GET http://localhost:3000/reports/2
+content-type: application/json
+
+### Update a report by id
+PATCH http://localhost:3000/reports/1
+content-type: application/json
+
+{
+    "title": "Updated report title"
+}
+
+### Delete a report by id
+DELETE http://localhost:3000/reports/4
+content-type: application/json

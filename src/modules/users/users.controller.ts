@@ -11,7 +11,7 @@ import {
   Session,
   UseGuards,
 } from '@nestjs/common';
-import { CurrentUser } from 'src/decorators/current-user.dto';
+import { CurrentUser } from 'src/modules/users/decorator/current-user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serializer } from 'src/interceptors/serializer.interceptor';
 import { AuthService } from './auth.service';
@@ -21,6 +21,7 @@ import { SignupUserDto } from './dto/signup-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
+import { UserEntity } from './entities/user.entity';
 
 // @UseInterceptors(new SerializerInterceptor(UserDto))
 @Serializer(UserDto)
@@ -60,7 +61,7 @@ export class UsersController {
 
   @Get('whoami')
   @UseGuards(AuthGuard)
-  whoami(@CurrentUser() user: any) {
+  whoami(@CurrentUser() user: UserEntity) {
     return user;
   }
 
