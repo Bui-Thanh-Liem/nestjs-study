@@ -1,21 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
-import { ReportsService } from './reports.service';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { UserEntity } from '../users/entities/user.entity';
-import { CurrentUser } from '../users/decorator/current-user.dto';
 import { Serializer } from 'src/interceptors/serializer.interceptor';
-import { UserDto } from '../users/dto/user.dto';
+import { CurrentUser } from '../users/decorator/current-user.dto';
+import { UserEntity } from '../users/entities/user.entity';
+import { CreateReportDto } from './dto/create-report.dto';
+import { ReportDto } from './dto/report.dto';
+import { UpdateReportDto } from './dto/update-report.dto';
+import { ReportsService } from './reports.service';
 
 @Controller('reports')
 export class ReportsController {
@@ -23,7 +23,7 @@ export class ReportsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  @Serializer(UserDto)
+  @Serializer(ReportDto)
   create(
     @Body() createReportDto: CreateReportDto,
     @CurrentUser() user: UserEntity,

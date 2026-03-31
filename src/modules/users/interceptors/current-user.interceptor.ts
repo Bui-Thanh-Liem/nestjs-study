@@ -14,17 +14,17 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
   constructor(private usersService: UsersService) {}
 
-  intercept(
+  async intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
-  ): Observable<any> | Promise<Observable<any>> {
+  ): Promise<Observable<any>> {
     const req = context.switchToHttp().getRequest();
     const userId = req.session?.userId;
 
     //
     if (userId) {
       this.logger.debug(`userId: ${userId}`);
-      const user = this.usersService.findOne(userId);
+      const user = await this.usersService.findOne(userId);
       this.logger.debug(`Current user: ${JSON.stringify(user)}`);
       req.currentUser = user;
     }
