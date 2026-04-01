@@ -3,15 +3,19 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcrypt';
-import { UsersService } from '../users/users.service';
-import { UserEntity } from '../users/entities/user.entity';
 import { sign } from 'jsonwebtoken';
 import { IPayload } from 'src/shared/interfaces/IPayload.interface';
+import { UserEntity } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private configService: ConfigService,
+  ) {}
 
   // Validate user credentials (local)
   async validateUser(email: string, password: string) {
@@ -63,6 +67,9 @@ export class AuthService {
   // Sign out a user (clear session or invalidate token)
   generateJwtToken(payload: IPayload): string {
     // In a real application, use environment variables for the secret and consider token expiration
-    return sign(payload, process.env.JWT_SECRET || '', { expiresIn: '8h' });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return sign(payload, this.configService.get('JWT_SECRET') || 'key-secret', {
+      expiresIn: '8h',
+    });
   }
 }

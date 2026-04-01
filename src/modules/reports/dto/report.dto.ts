@@ -21,6 +21,15 @@ export class ReportDto {
   year: number;
 
   @Expose()
+  mileage: number;
+
+  @Expose()
+  lng: number;
+
+  @Expose()
+  lat: number;
+
+  @Expose()
   approved: boolean;
 
   @Transform(({ obj }: { obj: { user: UserEntity } }) => obj.user.id)

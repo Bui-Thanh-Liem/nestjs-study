@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ReportEntity } from './entities/report.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
+import { GetEstimateDto } from './dto/get-astimate.dto';
 
 @Injectable()
 export class ReportsService {
@@ -27,6 +28,28 @@ export class ReportsService {
 
     report.approved = approved;
     return await this.reportRepo.save(report);
+  }
+
+  async getEstimate(getEstimateDto: GetEstimateDto) {
+    const { make, model, year, lng, lat, mileage } = getEstimateDto;
+
+    const builder = this.reportRepo
+      .createQueryBuilder('reports')
+      // .select('AVG(price)', 'price')
+      .select('*')
+      .where('make = :make', { make })
+      .andWhere('model = :model', { model })
+      .andWhere('lng - :lng BETWEEN -5 AND 5', { lng })
+      .andWhere('lat - :lat BETWEEN -5 AND 5', { lat })
+      .andWhere('year - :year BETWEEN -3 AND 3', { year })
+      .andWhere('approved IS TRUE')
+      .orderBy('ABS(mileage - :mileage)', 'DESC') // Sắp xếp theo độ chênh lệch mileage từ nhỏ đến lớn
+      .setParameters({ mileage })
+      .limit(3);
+
+    const estimates = await builder.getRawMany();
+
+    return Promise.resolve(estimates);
   }
 
   async findAll() {

@@ -6,19 +6,23 @@ content-type: application/json
     "make": "Toyota",
     "model": "Camry",
     "year": 2020,
-    "mileage": 15000,
+    "mileage": 12000,
     "lng": 105.85,
     "lat": 21.02,
-    "price": 20000
+    "price": 2400000
 }
 
 ### Approve report
-PATCH http://localhost:3000/reports/1/approval
+PATCH http://localhost:3000/reports/18/approval
 content-type: application/json
 
 {
     "approved": true
 }
+
+### Get estimate
+GET http://localhost:3000/reports/estimate?make=Toyota&model=Camry&year=2020&mileage=12000&lng=105.85&lat=21.02
+content-type: application/json
 
 ### Get all reports
 GET http://localhost:3000/reports?page=1&limit=10
@@ -43,5 +47,5 @@ content-type: application/json
 }
 
 ### Delete a report by id
-DELETE http://localhost:3000/reports/1
+DELETE http://localhost:3000/reports/8
 content-type: application/json

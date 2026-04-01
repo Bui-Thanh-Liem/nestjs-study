@@ -7,6 +7,9 @@ export class UserDto {
   @Expose()
   email: string;
 
+  @Expose()
+  admin: boolean;
+
   @Exclude()
   password: string;
 }

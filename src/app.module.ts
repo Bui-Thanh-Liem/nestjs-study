@@ -4,17 +4,18 @@ import {
   NotFoundException,
   ValidationPipe,
 } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import cookieSession from 'cookie-session';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { ReportEntity } from './modules/reports/entities/report.entity';
+import { ReportsModule } from './modules/reports/reports.module';
 import { UserEntity } from './modules/users/entities/user.entity';
 import { UsersModule } from './modules/users/users.module';
-import { APP_PIPE } from '@nestjs/core';
-import cookieSession from 'cookie-session';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ReportsModule } from './modules/reports/reports.module';
-import { ReportEntity } from './modules/reports/entities/report.entity';
-import { AuthModule } from './modules/auth/auth.module';
+import { JwtAuthStrategy } from './strategies/auth.strategy';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { AuthModule } from './modules/auth/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
+    JwtAuthStrategy,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({

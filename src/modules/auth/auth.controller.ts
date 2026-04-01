@@ -7,18 +7,18 @@ import {
   Session,
   UseGuards,
 } from '@nestjs/common';
-import { SignupUserDto } from './dtos/signup-user.dto';
-import type { ISession } from 'src/shared/interfaces/ISession.interface';
-import { SigninUserDto } from './dtos/signin-user.dto';
-import { UserEntity } from '../users/entities/user.entity';
-import { CurrentUser } from '../../decorators/current-user.decorator';
-import { LocalAuthGuard } from './guards/local.guard';
-import { AuthService } from './auth.service';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { GoogleAuthGuard } from './guards/google.guard';
 import type { Request } from 'express';
 import { Serializer } from 'src/interceptors/serializer.interceptor';
+import type { ISession } from 'src/shared/interfaces/ISession.interface';
+import { CurrentUser } from '../../decorators/current-user.decorator';
+import { UserEntity } from '../users/entities/user.entity';
+import { AuthService } from './auth.service';
 import { AuthDto } from './dtos/auth.dto';
+import { SigninUserDto } from './dtos/signin-user.dto';
+import { SignupUserDto } from './dtos/signup-user.dto';
+import { GoogleAuthGuard } from './guards/google.guard';
+import { JwtAuthGuard } from '../../guards/auth.guard';
+import { LocalAuthGuard } from './guards/local.guard';
 
 @Controller('auth')
 @Serializer(AuthDto)
@@ -69,7 +69,7 @@ export class AuthController {
   }
 
   @Get('whoami')
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   whoami(@CurrentUser() user: UserEntity) {
     return user;
   }

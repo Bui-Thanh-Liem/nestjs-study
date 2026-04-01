@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,7 +14,7 @@ export class UsersService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    return await this.initializeAdminUser();
+    await this.initializeAdminUser();
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -68,18 +69,23 @@ export class UsersService implements OnModuleInit {
     return await this.userRepo.remove(user);
   }
 
-  async initializeAdminUser() {
+  private async initializeAdminUser() {
     const adminEmail = 'liemdev@gmail.com';
-    const existingAdmin = await this.userRepo.findOneBy({ email: adminEmail });
+    const user = await this.findByEmail(adminEmail);
 
-    if (!existingAdmin) {
+    if (!user) {
+      //
+      const salt = await bcrypt.genSalt();
+      const hashPassword = await bcrypt.hash('admin123', salt);
+
+      //
       const adminUser = this.userRepo.create({
         email: adminEmail,
-        password: 'admin123', // In production, use a secure password and hash it
+        password: hashPassword,
         admin: true,
       });
       await this.userRepo.save(adminUser);
-      console.log('Admin user created with email:', adminEmail);
+      console.log('Admin user created with email:', adminUser.email);
     } else {
       console.log('Admin user already exists with email:', adminEmail);
     }

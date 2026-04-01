@@ -6,7 +6,7 @@ declare global {
       user: UserEntity | null;
       session?: {
         userId?: number | null;
-        accessToken?: string | null;
+        token?: string | null;
       };
     }
   }
