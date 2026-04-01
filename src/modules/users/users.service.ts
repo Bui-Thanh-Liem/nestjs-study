@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -6,11 +6,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   constructor(
     @InjectRepository(UserEntity)
     private userRepo: Repository<UserEntity>,
   ) {}
+
+  async onModuleInit() {
+    return await this.initializeAdminUser();
+  }
 
   async create(createUserDto: CreateUserDto) {
     const user = this.userRepo.create(createUserDto);
@@ -37,12 +41,12 @@ export class UsersService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     if (!id) return null;
     return await this.userRepo.findOneBy({ id });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepo.findOneBy({ id });
 
     if (!user) {
@@ -53,7 +57,7 @@ export class UsersService {
     return await this.userRepo.save(updatedUser);
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const user = await this.userRepo.findOneBy({ id });
 
     if (!user) {
@@ -62,5 +66,22 @@ export class UsersService {
 
     // await this.userRepo.delete(id); // command SQL
     return await this.userRepo.remove(user);
+  }
+
+  async initializeAdminUser() {
+    const adminEmail = 'liemdev@gmail.com';
+    const existingAdmin = await this.userRepo.findOneBy({ email: adminEmail });
+
+    if (!existingAdmin) {
+      const adminUser = this.userRepo.create({
+        email: adminEmail,
+        password: 'admin123', // In production, use a secure password and hash it
+        admin: true,
+      });
+      await this.userRepo.save(adminUser);
+      console.log('Admin user created with email:', adminEmail);
+    } else {
+      console.log('Admin user already exists with email:', adminEmail);
+    }
   }
 }

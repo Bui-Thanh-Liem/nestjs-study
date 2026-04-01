@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,26 +14,47 @@ export class ReportsService {
   ) {}
 
   create(createReportDto: CreateReportDto, user: UserEntity) {
-    console.log('Creating report with user:', user);
-
     const report = this.reportRepo.create(createReportDto);
     report.user = user;
     return this.reportRepo.save(report);
   }
 
-  findAll() {
-    return `This action returns all reports`;
+  async approveReport(id: number, approved: boolean) {
+    console.log(`Approving report with id ${id}`);
+
+    const report = await this.reportRepo.findOneBy({ id });
+    if (!report) throw new NotFoundException(`Report with id ${id} not found`);
+
+    report.approved = approved;
+    return await this.reportRepo.save(report);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} report`;
+  async findAll() {
+    return await this.reportRepo.find({ relations: ['user'] });
   }
 
-  update(id: number, updateReportDto: UpdateReportDto) {
-    return `This action updates a #${id} report`;
+  async findOne(id: number) {
+    return await this.reportRepo.findOneBy({ id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} report`;
+  async update(id: number, updateReportDto: UpdateReportDto) {
+    const report = await this.reportRepo.findOneBy({ id });
+
+    if (!report) {
+      throw new NotFoundException(`Report with id ${id} not found`);
+    }
+
+    const updatedReport = this.reportRepo.merge(report, updateReportDto);
+    return await this.reportRepo.save(updatedReport);
+  }
+
+  async remove(id: number) {
+    const report = await this.reportRepo.findOneBy({ id });
+
+    if (!report) {
+      throw new NotFoundException(`Report with id ${id} not found`);
+    }
+
+    return await this.reportRepo.remove(report);
   }
 }

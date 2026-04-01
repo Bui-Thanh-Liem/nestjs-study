@@ -3,7 +3,21 @@ POST http://localhost:3000/reports
 content-type: application/json
 
 {
-    "title": "Hello, World! alo liem 2"
+    "make": "Toyota",
+    "model": "Camry",
+    "year": 2020,
+    "mileage": 15000,
+    "lng": 105.85,
+    "lat": 21.02,
+    "price": 20000
+}
+
+### Approve report
+PATCH http://localhost:3000/reports/1/approval
+content-type: application/json
+
+{
+    "approved": true
 }
 
 ### Get all reports
@@ -19,9 +33,15 @@ PATCH http://localhost:3000/reports/1
 content-type: application/json
 
 {
-    "title": "Updated report title"
+    "make": "Toyota",
+    "model": "Camry",
+    "year": 2020,
+    "mileage": 15000,
+    "lng": 105.85,
+    "lat": 21.02,
+    "price": 20000
 }
 
 ### Delete a report by id
-DELETE http://localhost:3000/reports/4
+DELETE http://localhost:3000/reports/1
 content-type: application/json

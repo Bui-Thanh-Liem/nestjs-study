@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 
-export class UserDto {
+export class AuthDto {
   @Expose()
   id: string;
 

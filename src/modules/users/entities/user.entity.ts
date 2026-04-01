@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import { ReportEntity } from 'src/modules/reports/entities/report.entity';
 import { BaseEntity } from 'src/shared/Base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
@@ -10,9 +9,11 @@ export class UserEntity extends BaseEntity {
   @Column()
   email: string;
 
-  @Exclude()
   @Column()
   password: string;
+
+  @Column({ default: false })
+  admin: boolean;
 
   @OneToMany(() => ReportEntity, (report) => report.user)
   reports: ReportEntity[];

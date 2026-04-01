@@ -10,12 +10,14 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Serializer } from 'src/interceptors/serializer.interceptor';
-import { CurrentUser } from '../users/decorator/current-user.dto';
+import { CurrentUser } from '../../decorators/current-user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { CreateReportDto } from './dto/create-report.dto';
 import { ReportDto } from './dto/report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { ReportsService } from './reports.service';
+import { ApprovalReportDto } from './dto/approval-report.dto';
+import { RoleGuard } from 'src/guards/role.guard';
 
 @Controller('reports')
 export class ReportsController {
@@ -31,23 +33,35 @@ export class ReportsController {
     return this.reportsService.create(createReportDto, user);
   }
 
+  @Patch(':id/approval')
+  @UseGuards(AuthGuard, RoleGuard)
+  async approveReport(
+    @Param('id') id: string,
+    @Body() approvalDto: ApprovalReportDto,
+  ) {
+    return await this.reportsService.approveReport(+id, approvalDto.approved);
+  }
+
   @Get()
-  findAll() {
-    return this.reportsService.findAll();
+  async findAll() {
+    return await this.reportsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reportsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.reportsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportsService.update(+id, updateReportDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateReportDto: UpdateReportDto,
+  ) {
+    return await this.reportsService.update(+id, updateReportDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reportsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.reportsService.remove(+id);
   }
 }

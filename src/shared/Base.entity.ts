@@ -7,7 +7,7 @@ import {
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @AfterInsert()
   handlerAfterInsert() {

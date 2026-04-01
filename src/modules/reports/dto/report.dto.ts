@@ -1,4 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 export class ReportDto {
   @Expose()
@@ -22,7 +23,7 @@ export class ReportDto {
   @Expose()
   approved: boolean;
 
-  @Transform(({ obj }) => obj.user?.id)
+  @Transform(({ obj }: { obj: { user: UserEntity } }) => obj.user.id)
   @Expose()
   user: number;
 }

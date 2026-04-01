@@ -1,0 +1,25 @@
+### Auth signup
+POST http://localhost:3000/auth/signup
+content-type: application/json
+
+{
+    "email": "liem@gmail.com",
+    "password": "password123"
+}
+
+### User signin
+POST http://localhost:3000/auth/signin
+content-type: application/json
+
+{
+    "email": "liem@gmail.com",
+    "password": "password123"
+}
+
+### User signout
+POST http://localhost:3000/auth/signout
+content-type: application/json
+
+### Who am I?
+GET http://localhost:3000/auth/whoami
+content-type: application/json
