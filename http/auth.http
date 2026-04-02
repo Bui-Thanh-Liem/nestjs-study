@@ -1,14 +1,16 @@
+@root=http://localhost:3000/api/v1
+
 ### Auth signup
-POST http://localhost:3000/auth/signup
+POST {{root}}/auth/signup
 content-type: application/json
 
 {
-    "email": "liem@gmail.com",
+    "email": "liems@gmail.com",
     "password": "password123"
 }
 
 ### User signin
-POST http://localhost:3000/auth/signin
+POST {{root}}/auth/signin
 content-type: application/json
 
 {
@@ -17,9 +19,9 @@ content-type: application/json
 }
 
 ### User signout
-POST http://localhost:3000/auth/signout
+POST {{root}}/auth/signout
 content-type: application/json
 
 ### Who am I?
-GET http://localhost:3000/auth/whoami
+GET {{root}}/auth/whoami
 content-type: application/json

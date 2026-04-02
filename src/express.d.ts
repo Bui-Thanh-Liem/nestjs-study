@@ -5,7 +5,6 @@ declare global {
     interface Request {
       user: UserEntity | null;
       session?: {
-        userId?: number | null;
         token?: string | null;
       };
     }

@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersService } from 'src/modules/users/users.service';
 import { IPayload } from 'src/shared/interfaces/IPayload.interface';
 
+// chỉ sử dụng jwt hoặc cookie session, không nên dùng cả 2 (hiện tại là học)
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   private readonly logger = new Logger(JwtAuthStrategy.name);
@@ -36,10 +37,13 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(payload: IPayload): Promise<unknown> {
     // check in database (cached) if user exists and is valid
     const user = await this.userService.findOne(payload.userId);
-    if (!user) throw new UnauthorizedException('Invalid token');
+    if (!user?.id) throw new UnauthorizedException('Invalid token');
 
     //
     this.logger.debug('Validating JWT payload:::', payload);
-    return user;
+    return {
+      id: user.id,
+      email: user.email,
+    };
   }
 }

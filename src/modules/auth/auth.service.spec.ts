@@ -1,11 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../auth.service';
-import { UsersService } from '../users.service';
-// import bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
+import { AuthService } from './auth.service';
 
-// jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
 describe('AuthService', () => {
   let service: AuthService;
   let usersService: UsersService;
@@ -72,7 +70,7 @@ describe('AuthService', () => {
 
     //
     const newUser = await service.singUp('test2@test.com', 'password');
-    expect(newUser.password).not.toEqual('password');
+    expect(newUser.user.password).not.toEqual('password');
   });
 
   // ==== Case: Invalid credentials =====
@@ -84,9 +82,7 @@ describe('AuthService', () => {
       password: 'password', // Mocked hashed password
     }));
 
-    await expect(service.signIn('email@email.com', 'password')).rejects.toThrow(
-      UnauthorizedException,
-    );
+    await expect(service.signIn({})).rejects.toThrow(UnauthorizedException);
   });
 
   // ==== Case: Valid credentials =====
@@ -99,7 +95,7 @@ describe('AuthService', () => {
     });
 
     //
-    const user = await service.signIn('test@test.com', 'password');
+    const user = await service.signIn({})
     expect(user).toBeDefined();
   });
 });

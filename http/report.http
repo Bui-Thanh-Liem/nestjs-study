@@ -1,5 +1,8 @@
+@root=http://localhost:3000/api/v1
+
+
 ### Create report
-POST http://localhost:3000/reports
+POST {{root}}/reports
 content-type: application/json
 
 {
@@ -13,7 +16,7 @@ content-type: application/json
 }
 
 ### Approve report
-PATCH http://localhost:3000/reports/18/approval
+PATCH {{root}}/reports/18/approval
 content-type: application/json
 
 {
@@ -21,19 +24,19 @@ content-type: application/json
 }
 
 ### Get estimate
-GET http://localhost:3000/reports/estimate?make=Toyota&model=Camry&year=2020&mileage=12000&lng=105.85&lat=21.02
+GET {{root}}/reports/estimate?make=Toyota&model=Camry&year=2020&mileage=12000&lng=105.85&lat=21.02
 content-type: application/json
 
 ### Get all reports
-GET http://localhost:3000/reports?page=1&limit=10
+GET {{root}}/reports?page=1&limit=10
 content-type: application/json
 
 ### Get a report by id
-GET http://localhost:3000/reports/2
+GET {{root}}/reports/2
 content-type: application/json
 
 ### Update a report by id
-PATCH http://localhost:3000/reports/1
+PATCH {{root}}/reports/1
 content-type: application/json
 
 {
@@ -47,5 +50,5 @@ content-type: application/json
 }
 
 ### Delete a report by id
-DELETE http://localhost:3000/reports/8
+DELETE {{root}}/reports/8
 content-type: application/json

@@ -1,8 +1,6 @@
 import { ReportEntity } from 'src/modules/reports/entities/report.entity';
-import { BaseEntity } from 'src/shared/Base.entity';
+import { BaseEntity } from 'src/shared/entities/Base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
-
-console.log('ReportEntity:::', ReportEntity);
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -14,6 +12,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ default: false })
   admin: boolean;
+
+  // @Column({ default: false })
+  // admin_: boolean;
 
   @OneToMany(() => ReportEntity, (report) => report.user)
   reports: ReportEntity[];

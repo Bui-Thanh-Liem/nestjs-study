@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-facebook';
 
@@ -13,11 +14,11 @@ interface FacebookProfile {
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     super({
-      clientID: process.env.FACEBOOK_CLIENT_ID || '',
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || '',
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL || '',
+      clientID: configService.get('FACEBOOK_CLIENT_ID') || '',
+      clientSecret: configService.get('FACEBOOK_CLIENT_SECRET') || '',
+      callbackURL: configService.get('FACEBOOK_CALLBACK_URL') || '',
       profileFields: ['id', 'displayName', 'emails'],
     });
   }

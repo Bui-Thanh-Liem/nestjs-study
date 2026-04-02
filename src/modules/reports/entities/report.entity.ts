@@ -1,8 +1,6 @@
 import { UserEntity } from 'src/modules/users/entities/user.entity';
-import { BaseEntity } from 'src/shared/Base.entity';
+import { BaseEntity } from 'src/shared/entities/Base.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-
-console.log('UserEntity:::', UserEntity);
 
 @Entity('reports')
 export class ReportEntity extends BaseEntity {
