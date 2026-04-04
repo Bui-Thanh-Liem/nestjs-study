@@ -15,7 +15,7 @@ import { ReportsModule } from './modules/reports/reports.module';
 import { UsersModule } from './modules/users/users.module';
 import { JwtAuthStrategy } from './strategies/auth.strategy';
 import sqliteConfig from './configs/sqlite.config';
-import { HttpExceptionFilter } from './exception-filters/http-exception.filter';
+import { ErrorExceptionFilter } from './exception-filters/http-exception.filter';
 
 @Module({
   imports: [
@@ -52,13 +52,22 @@ import { HttpExceptionFilter } from './exception-filters/http-exception.filter';
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({
-        whitelist: true,
+        // Tùy chọn 0: Bật tính năng loại bỏ các thuộc tính không được định nghĩa trong DTO và trả về lỗi nếu có
         forbidNonWhitelisted: true,
+        // Tùy chọn 1: Loại bỏ các thuộc tính không được định nghĩa trong DTO
+        whitelist: true,
+        // Tùy chọn 2: Biến đổi dữ liệu đầu vào thành instance của DTO
+        transform: true,
+        // Tùy chọn 3: Nếu bạn muốn chuyển đổi chuỗi thành kiểu dữ liệu nguyên thủy
+        // Ví dụ: '123' thành 123 nếu bạn dùng @IsNumber() trên tham số query
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
       }),
     },
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: ErrorExceptionFilter,
     },
   ],
 })
